@@ -3,11 +3,14 @@ const mongoose = require('mongoose');
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const expressValidator = require("express-validator");
 
 const app = express();
 require('dotenv').config();
 
-const userRouter = require('./routes/user');
+const authRoutes = require('./routes/auth');
+const userRoutes = require("./routes/user");
+const categoryRoutes = require("./routes/category");
 
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
@@ -18,8 +21,11 @@ mongoose.connect(process.env.MONGO_URI, {
 app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(expressValidator());
 
-app.use('/api', userRouter);
+app.use('/api', authRoutes);
+app.use('/api', userRoutes);
+app.use("/api", categoryRoutes);
 
 const port = process.env.PORT || 5000;
 
